@@ -1,0 +1,68 @@
+import csv
+import os
+
+DATA_FILE = 'data.csv'
+HEADERS = ['Task', 'Category', 'Time Spent (min)']
+
+def initialize():
+    if not os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(HEADERS)
+
+def add_task():
+    task = input("Enter task description: ")
+    category = input("Enter category (e.g., work, study, health): ")
+    time_spent = input("Enter time spent (in minutes): ")
+
+    with open(DATA_FILE, 'a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([task, category, time_spent])
+    print("Task added!\n")
+
+def view_tasks():
+    with open(DATA_FILE, 'r') as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            print(f"Task: {row[0]}, Category: {row[1]}, Time: {row[2]} min")
+
+def productivity_summary():
+    summary = {}
+    with open(DATA_FILE, 'r') as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            category = row[1]
+            time_spent = int(row[2])
+            summary[category] = summary.get(category, 0) + time_spent
+
+    print("\nProductivity Summary:")
+    for category, total_time in summary.items():
+        print(f"{category}: {total_time} min")
+
+def menu():
+    while True:
+        print("\n--- Productivity Tracker ---")
+        print("1. Add Task")
+        print("2. View Tasks")
+        print("3. Productivity Summary")
+        print("4. Exit")
+        choice = input("Choose an option: ")
+
+        if choice == '1':
+            add_task()
+        elif choice == '2':
+            view_tasks()
+        elif choice == '3':
+            productivity_summary()
+        elif choice == '4':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+if __name__ == "__main__":
+    initialize()
+    menu()
+
